@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>动手学大模型 · 学习平台</title>
+<style>
+:root{
+  --bg:#0b1023; --bg2:#0f172a; --card:#121b36; --card2:#16203f;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --txt:#e7ecf8; --dim:#94a3c8; --faint:#64748b;
+  --cyan:#22d3ee; --violet:#818cf8; --emerald:#34d399; --amber:#fbbf24; --rose:#fb7185;
+  --grad:linear-gradient(120deg,#22d3ee,#818cf8);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:radial-gradient(1200px 600px at 80% -10%,rgba(129,140,248,.16),transparent 60%),
+             radial-gradient(900px 500px at -10% 10%,rgba(34,211,238,.10),transparent 55%),var(--bg);
+  color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  min-height:100vh; line-height:1.7;
+}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:rgba(34,211,238,.3)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.site{
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+  background:rgba(11,16,35,.82);border-bottom:1px solid var(--line);
+}
+.header-in{display:flex;align-items:center;gap:18px;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:.3px}
+.logo-badge{
+  width:34px;height:34px;border-radius:10px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;color:#0b1023;font-weight:800;font-size:15px;
+  box-shadow:0 0 18px rgba(99,102,241,.5);
+}
+.logo small{display:block;font-size:11px;color:var(--dim);font-weight:400;letter-spacing:1px}
+.nav-links{display:flex;gap:6px;margin-left:auto;align-items:center}
+.nav-links a{
+  color:var(--dim);padding:7px 13px;border-radius:10px;font-size:14px;transition:.2s;white-space:nowrap;
+}
+.nav-links a:hover{color:var(--txt);background:rgba(255,255,255,.06);text-decoration:none}
+.nav-links a.active{color:var(--cyan);background:rgba(34,211,238,.12)}
+.progress-pill{
+  display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);
+  background:rgba(255,255,255,.05);border:1px solid var(--line);padding:6px 12px;border-radius:99px;
+}
+.progress-ring{width:26px;height:26px;flex:none}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 34px;text-align:center}
+.hero .kicker{
+  display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--cyan);
+  border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);
+  padding:6px 14px;border-radius:99px;margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(30px,5vw,48px);font-weight:800;line-height:1.25;letter-spacing:-.5px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p.lead{max-width:680px;margin:16px auto 0;color:var(--dim);font-size:16px}
+.stat-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.stat{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 22px;min-width:110px;
+}
+.stat b{display:block;font-size:22px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{font-size:12px;color:var(--faint)}
+
+/* ---------- tracks ---------- */
+.tracks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:30px 0}
+.track{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;cursor:pointer;transition:.22s;position:relative;overflow:hidden;
+}
+.track:hover{transform:translateY(-3px);border-color:var(--line2);background:var(--card2)}
+.track .t-ico{
+  width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#0b1023;font-weight:800;margin-bottom:12px;
+}
+.track h3{font-size:16px;margin-bottom:6px}
+.track p{font-size:13.5px;color:var(--dim)}
+.track .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-size:11.5px;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.07);color:var(--dim);border:1px solid var(--line)}
+.chip.done{background:rgba(52,211,153,.12);color:var(--emerald);border-color:rgba(52,211,153,.3)}
+
+/* ---------- chapter grid ---------- */
+.section-title{display:flex;align-items:baseline;gap:12px;margin:38px 0 16px}
+.section-title h2{font-size:20px;font-weight:700}
+.section-title span{color:var(--faint);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;cursor:pointer;transition:.22s;display:flex;flex-direction:column;gap:10px;position:relative;
+}
+.card:hover{transform:translateY(-3px);border-color:var(--line2);background:var(--card2)}
+.card .top{display:flex;align-items:center;gap:12px}
+.ch-num{
+  width:42px;height:42px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;background:rgba(255,255,255,.06);border:1px solid var(--line);
+  color:var(--txt);
+}
+.ch-num.done{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.35);color:var(--emerald)}
+.card h3{font-size:16.5px;font-weight:700}
+.card .sub{font-size:12.5px;color:var(--faint);margin-top:1px}
+.card p.intro{font-size:13.5px;color:var(--dim);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line)}
+.card .foot .status{font-size:12.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
+.card .foot .go{font-size:13px;color:var(--cyan);font-weight:600}
+.badge{font-size:11px;padding:2.5px 9px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--dim)}
+.badge.r-入门{background:rgba(34,211,238,.1);color:var(--cyan);border-color:rgba(34,211,238,.3)}
+.badge.r-安全{background:rgba(251,113,133,.1);color:var(--rose);border-color:rgba(251,113,133,.3)}
+.badge.r-智能体{background:rgba(251,191,36,.1);color:var(--amber);border-color:rgba(251,191,36,.3)}
+.badge.r-进阶{background:rgba(129,140,248,.1);color:var(--violet);border-color:rgba(129,140,248,.3)}
+.badge.diff-高级{background:rgba(251,113,133,.14);color:var(--rose);border-color:rgba(251,113,133,.4)}
+
+/* ---------- chapter detail ---------- */
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--faint);padding:22px 0 0}
+.breadcrumb a{color:var(--dim)}
+.ch-head{padding:20px 0 8px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.ch-head h1{font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.4px}
+.ch-head .sub{color:var(--cyan);font-size:14.5px;margin-top:4px;font-weight:500}
+.ch-head .intro{color:var(--dim);font-size:15px;margin-top:14px;max-width:860px}
+.ch-head .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab-btn{
+  padding:9px 20px;border-radius:12px;font-size:14px;color:var(--dim);cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);transition:.2s;font-weight:500;
+}
+.tab-btn:hover{color:var(--txt);border-color:var(--line2)}
+.tab-btn.active{color:#0b1023;background:var(--grad);border-color:transparent;font-weight:700}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.block-title{font-size:15px;font-weight:700;margin:26px 0 12px;display:flex;align-items:center;gap:9px}
+.block-title::before{content:"";width:4px;height:16px;border-radius:3px;background:var(--grad)}
+.obj-list{list-style:none;display:grid;gap:8px}
+.obj-list li{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:14px;
+  display:flex;gap:10px;align-items:baseline;color:var(--txt);
+}
+.obj-list li::before{content:"✓";color:var(--emerald);font-weight:700;flex:none}
+.kp-list{display:grid;gap:10px}
+.kp{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--txt);
+  border-left:3px solid var(--cyan);
+}
+.steps{display:grid;gap:0;counter-reset:step}
+.step{display:flex;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:none}
+.step .n{
+  counter-increment:step;flex:none;width:30px;height:30px;border-radius:9px;margin-top:2px;
+  background:rgba(129,140,248,.15);border:1px solid rgba(129,140,248,.35);color:#a5b4fc;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13.5px;
+}
+.step .n::before{content:counter(step)}
+.step b{display:block;font-size:14.5px;margin-bottom:5px}
+.step p{font-size:13.5px;color:var(--dim)}
+
+/* code panel */
+.code-card{background:#0a0f22;border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.code-card .hd{display:flex;align-items:center;gap:10px;padding:11px 16px;background:rgba(255,255,255,.04);border-bottom:1px solid var(--line)}
+.code-card .hd .dot{width:9px;height:9px;border-radius:50%;background:#fb7185;flex:none}
+.code-card .hd .dot:nth-child(2){background:#fbbf24}
+.code-card .hd .dot:nth-child(3){background:#34d399}
+.code-card .hd .t{font-size:13.5px;font-weight:600;margin-left:6px}
+.code-card .hd .copy{margin-left:auto;font-size:12px;color:var(--dim);cursor:pointer;padding:4px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;transition:.2s}
+.code-card .hd .copy:hover{color:var(--cyan);border-color:rgba(34,211,238,.4)}
+.code-card pre{
+  padding:16px;overflow-x:auto;font-size:13px;line-height:1.65;
+  font-family:"SF Mono","JetBrains Mono",Consolas,"Courier New",monospace;
+  color:#c7d2fe;white-space:pre;
+}
+.code-card .exp{padding:12px 16px;font-size:13px;color:var(--dim);border-top:1px dashed var(--line);background:rgba(255,255,255,.02)}
+.tok-c{color:#a5b4fc}.tok-k{color:#f472b6}.tok-s{color:#86efac}.tok-n{color:#fbbf24}.tok-cm{color:#64748b;font-style:italic}
+
+/* section flow */
+.sec-toc{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.sec-toc-link{font-size:12.5px;color:var(--dim);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:99px;padding:6px 12px;text-decoration:none;transition:.2s}
+.sec-toc-link:hover{color:var(--cyan);border-color:rgba(34,211,238,.4);text-decoration:none}
+.sec-block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:18px 0}
+.sec-title{font-size:17px;font-weight:700;display:flex;align-items:center;gap:12px;margin-bottom:6px;color:var(--txt)}
+.sec-no{flex:0 0 auto;font-size:12px;font-weight:800;color:#0b1023;background:var(--grad);border-radius:8px;padding:4px 9px;letter-spacing:.5px}
+.sec-body{font-size:14.5px;line-height:1.9;color:var(--dim);margin:8px 0 14px;overflow-wrap:anywhere;word-break:break-word}
+.sec-body p{margin:0 0 12px}
+.sec-body code{font-family:"SF Mono",Consolas,monospace;font-size:13px;color:#fbbf24;background:rgba(251,191,36,.08);padding:1px 6px;border-radius:6px;border:1px solid rgba(251,191,36,.18);white-space:pre-wrap;word-break:break-all;overflow-wrap:anywhere}
+.sec-body b{color:var(--txt)}
+.sec-tip{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#fbbf24;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:10px 14px;margin-top:12px;line-height:1.7}
+.code-card .lang{font-size:11px;color:#64748b;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:1px 8px;margin-left:auto;letter-spacing:.5px;text-transform:uppercase;flex:0 0 auto;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-card .hd .t{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-card .hd .copy{flex:0 0 auto}
+
+/* quiz */
+.quiz-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px}
+.quiz-card .q{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;gap:10px}
+.quiz-card .q .qn{flex:none;color:var(--cyan);font-weight:800}
+.opts{display:grid;gap:9px}
+.opt{
+  text-align:left;font-size:14px;color:var(--txt);padding:11px 16px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);transition:.18s;display:flex;gap:10px;align-items:baseline;
+}
+.opt:hover{border-color:var(--line2);background:rgba(255,255,255,.06)}
+.opt .k{flex:none;font-weight:700;color:var(--faint);width:16px}
+.opt.right{border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.1)}
+.opt.right .k{color:var(--emerald)}
+.opt.wrong{border-color:rgba(251,113,133,.55);background:rgba(251,113,133,.1)}
+.opt.wrong .k{color:var(--rose)}
+.opt:disabled{cursor:default}
+.explain{
+  display:none;margin-top:12px;padding:12px 16px;border-radius:11px;font-size:13.5px;line-height:1.7;
+  background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.25);color:#c7d2fe;
+}
+.explain.show{display:block;animation:fadeIn .25s}
+.explain b{color:var(--violet)}
+.quiz-result{
+  margin-top:18px;padding:20px;border-radius:14px;text-align:center;display:none;
+  background:var(--card2);border:1px solid var(--line2);
+}
+.quiz-result.show{display:block;animation:fadeIn .3s}
+.quiz-result .score{font-size:38px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.quiz-result p{color:var(--dim);font-size:14px;margin-top:6px}
+.quiz-result .tagline{font-size:13px;margin-top:10px}
+.btn{
+  display:inline-block;padding:10px 22px;border-radius:11px;border:none;cursor:pointer;font-size:14px;font-weight:600;
+  background:var(--grad);color:#0b1023;transition:.2s;
+}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--line2)}
+
+/* footer & misc */
+footer.site{padding:40px 0 46px;margin-top:56px;border-top:1px solid var(--line);color:var(--faint);font-size:13px;text-align:center}
+.to-top{
+  position:fixed;right:22px;bottom:22px;width:42px;height:42px;border-radius:12px;z-index:60;
+  background:var(--card2);border:1px solid var(--line2);color:var(--txt);cursor:pointer;font-size:17px;
+  display:none;align-items:center;justify-content:center;transition:.2s;
+}
+.to-top.show{display:flex}
+.to-top:hover{background:var(--grad);color:#0b1023}
+.empty{color:var(--faint);font-size:14px;padding:30px;text-align:center}
+.notice{
+  margin:20px 0;padding:12px 18px;border-radius:12px;font-size:13px;color:var(--dim);
+  background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);display:flex;gap:10px;align-items:center;
+}
+@media(max-width:720px){
+  .nav-links a.hide-sm{display:none}
+  .grid{grid-template-columns:1fr}
+  .header-in{gap:8px}
+  .nav-links a{padding:6px 9px;font-size:13px}
+  .progress-pill{padding:4px 8px;font-size:12px}
+  .progress-ring{width:22px;height:22px}
+  .logo{font-size:15px}
+  .logo small{font-size:10px;letter-spacing:.5px}
+  .logo-badge{width:30px;height:30px;font-size:13px}
+  .hero{padding:44px 0 24px}
+  .stat-row{gap:10px}
+  .stat{padding:10px 16px;min-width:96px}
+  .stat b{font-size:19px}
+  .tabs{gap:6px}
+  .tab-btn{padding:8px 13px;font-size:13px;flex:1;text-align:center}
+  .ch-head h1{font-size:23px}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap header-in">
+    <div class="logo">
+      <div class="logo-badge">LLM</div>
+      <div>动手学大模型<small>Dive into LLMs · 学习平台</small></div>
+    </div>
+    <nav class="nav-links">
+      <a href="#/" id="nav-home" class="active">课程总览</a>
+      <a href="#/progress" id="nav-progress" class="hide-sm">学习进度</a>
+      <div class="progress-pill">
+        <svg class="progress-ring" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="4"/>
+          <circle id="ring-fg" cx="18" cy="18" r="15.5" fill="none" stroke="url(#ringGrad)" stroke-width="4"
+            stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4" transform="rotate(-90 18 18)"/>
+          <defs><linearGradient id="ringGrad"><stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/></linearGradient></defs>
+        </svg>
+        <span id="progress-label">0 / 11 章</span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="site">
+  内容整理自上海交通大学开源教程 <a href="https://github.com/Lordog/dive-into-llms" target="_blank" rel="noopener">github.com/Lordog/dive-into-llms</a>（公益免费），仅供学习交流 · 学习进度保存在本地浏览器
+</footer>
+
+<button class="to-top" id="toTop" title="回到顶部">↑</button>
+
+<script src="data.js"></script>
+<script>
+"use strict";
+const COURSE = window.LLM_COURSE.chapters || [];
+const SRC = window.LLM_COURSE.source || "";
+const LS_KEY = "dive-into-llms-progress-v1";
+
+/* ---------- progress storage ---------- */
+function loadProg(){
+  try{return JSON.parse(localStorage.getItem(LS_KEY)||"")}catch(e){return}
+}
+function saveProg(p){try{localStorage.setItem(LS_KEY,JSON.stringify(p))}catch(e){}}
+function markRead(num){
+  const p=loadProg()||{};
+  p["ch"+num]=p["ch"+num]||{};
+  p["ch"+num].read=true;saveProg(p);updateProgress();
+}
+function markQuiz(num,score,total){
+  const p=loadProg()||{};
+  p["ch"+num]=p["ch"+num]||{};
+  p["ch"+num].quizScore=score;p["ch"+num].quizTotal=total;
+  p["ch"+num].quizDone=true;saveProg(p);updateProgress();
+}
+function chState(num){
+  const p=(loadProg()||{})["ch"+num]||{};
+  if(p.quizDone) return {label:"测验完成 "+p.quizScore+"/"+p.quizTotal, done:true, s:p.quizScore, t:p.quizTotal};
+  if(p.read) return {label:"已阅读", done:false};
+  return {label:"未开始", done:false};
+}
+function completedCount(){
+  return COURSE.filter(c=>{const p=(loadProg()||{})["ch"+c.num];return p&&p.quizDone}).length;
+}
+function updateProgress(){
+  const done=completedCount(), total=COURSE.length;
+  const lbl=document.getElementById("progress-label");
+  if(lbl) lbl.textContent=done+" / "+total+" 章";
+  const fg=document.getElementById("ring-fg");
+  if(fg) fg.style.strokeDashoffset=String(97.4*(1-(total?done/total:0)));
+}
+/* mark current chapter read on hash change to a chapter */
+let lastHash="";
+function trackRead(){
+  const m=location.hash.match(/^#\/ch\/(\d+)/);
+  if(m){const n=parseInt(m[1],10);if(lastHash!==n){markRead(n);lastHash=n;}}
+}
+window.addEventListener("hashchange",trackRead);
+
+/* ---------- helpers ---------- */
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function inlineMd(s){
+  /* minimal markdown: `code`, **bold**, [text](url) */
+  let t=esc(s);
+  t=t.replace(/`([^`]+)`/g,'<code style="background:rgba(34,211,238,.12);color:#7dd3fc;padding:1px 6px;border-radius:5px;font-size:12.5px">$1</code>');
+  t=t.replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");
+  t=t.replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return t;
+}
+function hl(code){
+  /* lightweight syntax highlight: comment/string tokens extracted first, then keywords/numbers */
+  const c=esc(code);
+  const ph=[];
+  let t=c
+    .replace(/(#[^\n]*)/g,m=>{ph.push('<span class="tok-cm">'+m+'</span>');return '\u0001'+(ph.length-1)+'\u0001';})
+    .replace(/(\'[^\']*\'|"[^"]*")/g,m=>{ph.push('<span class="tok-s">'+m+'</span>');return '\u0001'+(ph.length-1)+'\u0001';});
+  t=t.replace(/\b(from|import|def|return|if|else|elif|for|while|in|not|and|or|class|with|as|try|except|lambda|print|None|True|False|self|pip|conda|bash|python)\b/g,'<span class="tok-k">$1</span>')
+      .replace(/\b(\d+\.?\d*)\b/g,'<span class="tok-n">$1</span>');
+  let hidx=0;
+  return t.replace(/\u0001([\s\S]*?)\u0001/g,()=>ph[hidx++]);
+}
+function copyCode(btn,text){
+  const done=()=>{const old=btn.textContent;btn.textContent="已复制 ✓";btn.style.color="#34d399";setTimeout(()=>{btn.textContent=old;btn.style.color=""},1600);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallback());}
+  else fallback();
+  function fallback(){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(e){ta.remove();}}
+}
+
+/* ---------- router ---------- */
+const app=document.getElementById("app");
+function setNav(active){document.querySelectorAll(".nav-links a").forEach(a=>a.classList.toggle("active",a.id==="nav-"+active));}
+function route(){
+  trackRead();
+  const h=location.hash||"#/";
+  if(h.startsWith("#/ch/")) renderChapter(parseInt(h.split("/")[2],10));
+  else if(h==="#/progress") renderProgress();
+  else renderHome();
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- home ---------- */
+function renderHome(){
+  setNav("home");
+  const doneN=completedCount();
+  let html=`
+  <section class="hero">
+    <span class="kicker">上海交通大学开源教程 · 免费学习</span>
+    <h1>从理论到动手，11 章带你入门大模型</h1>
+    <p class="lead">基于《动手学大模型 Dive into LLMs》系列编程实践教程搭建：微调部署、提示工程、AI 安全对齐、多模态、智能体……每章含图文教程、核心代码速览与随堂测验。</p>
+    <div class="stat-row">
+      <div class="stat"><b>${COURSE.length}</b><span>课程章节</span></div>
+      <div class="stat"><b>${COURSE.reduce((s,c)=>s+c.quiz.length,0)}</b><span>随堂测验题</span></div>
+      <div class="stat"><b>${COURSE.reduce((s,c)=>s+(c.codeSamples||[]).length,0)}</b><span>核心代码片段</span></div>
+      <div class="stat"><b>${doneN}</b><span>已完成章节</span></div>
+    </div>
+  </section>`;
+
+  const tracks=[
+    {ico:"01",color:"#22d3ee",name:"入门路线",desc:"零基础起步：掌握微调部署、提示工程、数学推理、多模态四大核心主题，快速建立大模型实践手感。",chs:[1,2,4,8]},
+    {ico:"AI",color:"#fb7185",name:"AI 安全路线",desc:"越狱攻击、RLHF 对齐、模型水印、隐写术、智能体安全——从攻防两端理解大模型安全，本仓库的特色强项。",chs:[5,6,7,10,11]},
+    {ico:"AG",color:"#fbbf24",name:"智能体路线",desc:"让 AI 替你点外卖、操作 GUI；再深入了解开放场景下智能体的风险识别与安全防护。",chs:[9,10]},
+  ];
+  html+=`<div class="tracks">`;
+  tracks.forEach(t=>{
+    const done=t.chs.filter(n=>{const p=(loadProg()||{})["ch"+n];return p&&p.quizDone}).length;
+    html+=`<div class="track" onclick="location.hash='#/ch/${t.chs[0]}'">
+      <div class="t-ico" style="background:${t.color}">${t.ico}</div>
+      <h3>${t.name}</h3><p>${t.desc}</p>
+      <div class="chips">${t.chs.map(n=>{const st=(loadProg()||{})["ch"+n];return `<span class="chip ${st&&st.quizDone?"done":""}">第 ${n} 章${st&&st.quizDone?" ✓":""}</span>`;}).join("")}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="section-title"><h2>全部章节</h2><span>点击进入学习 · 完成测验即标记通关</span></div><div class="grid">`;
+  COURSE.forEach(c=>{
+    const st=chState(c.num);
+    const routes=(c.route||[]).map(r=>`<span class="badge r-${r}">${r}</span>`).join("");
+    html+=`
+    <div class="card" onclick="location.hash='#/ch/${c.num}'">
+      <div class="top">
+        <div class="ch-num ${st.done?"done":""}">${String(c.num).padStart(2,"0")}</div>
+        <div style="min-width:0"><h3>${esc(c.title)}</h3><div class="sub">${esc(c.subtitle||"")}</div></div>
+      </div>
+      <p class="intro">${esc(c.intro)}</p>
+      <div class="meta">
+        <span class="badge">难度 ${esc(c.difficulty)}</span>
+        <span class="badge">约 ${esc(c.duration)}</span>
+        <span class="badge">${c.quiz.length} 题</span>
+        ${routes}
+      </div>
+      <div class="foot">
+        <span class="status">${st.done?"✓":""} ${st.label}</span>
+        <span class="go">开始学习 →</span>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="notice"><span>来源：</span><span>${esc(SRC)}，内容为公益免费教程，仅供个人学习使用。</span></div>`;
+  app.innerHTML=html;
+}
+
+/* ---------- chapter ---------- */
+function renderChapter(num){
+  const c=COURSE.find(x=>x.num===num);
+  if(!c){app.innerHTML=`<div class="empty">未找到章节，<a href="#/">返回课程总览</a></div>`;return;}
+  setNav("home");
+  const tab=(location.hash.split("/")[3])||"doc";
+  markRead(num);
+  const st=chState(num);
+  const routes=(c.route||[]).map(r=>`<span class="badge r-${r}">${r}</span>`).join("");
+  let html=`
+  <nav class="breadcrumb"><a href="#/">课程总览</a><span>/</span><span>第 ${c.num} 章</span></nav>
+  <section class="ch-head">
+    <h1>第 ${c.num} 章 · ${esc(c.title)}</h1>
+    <div class="sub">${esc(c.subtitle||"")}</div>
+    <p class="intro">${esc(c.intro)}</p>
+    <div class="meta">
+      <span class="badge">难度 ${esc(c.difficulty)}</span>
+      <span class="badge">约 ${esc(c.duration)}</span>
+      <span class="badge">${c.quiz.length} 道测验</span>
+      ${routes}
+      <span class="badge ${st.done?"diff-高级":""}" style="${st.done?"color:#34d399;border-color:rgba(52,211,153,.4)":""}">${st.done?"已通关 · "+st.s+"/"+st.t:"进行中"}</span>
+    </div>
+  </section>
+  <div class="tabs">
+    <button class="tab-btn ${tab==="doc"?"active":""}" data-t="doc">章节学习</button>
+    <button class="tab-btn ${tab==="quiz"?"active":""}" data-t="quiz">小测验 (${c.quiz.length})</button>
+  </div>
+  <div id="panel-doc" class="panel ${tab==="doc"?"active":""}"></div>
+  <div id="panel-quiz" class="panel ${tab==="quiz"?"active":""}"></div>`;
+  app.innerHTML=html;
+  document.querySelectorAll(".tab-btn").forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    const t=b.dataset.t;
+    ["doc","quiz"].forEach(x=>document.getElementById("panel-"+x).classList.toggle("active",x===t));
+    if(t==="quiz") renderQuiz(c);
+  });
+  renderDoc(c);
+  if(tab==="quiz") renderQuiz(c);
+  window.scrollTo({top:0});
+}
+
+function para(t){
+  let blocks=t.split(/\n{2,}/);
+  if(blocks.length===1) blocks=t.split(/\n/);
+  return blocks.map(b=>b.trim()).filter(Boolean).map(b=>`<p>${inlineMd(b)}</p>`).join("");
+}
+function renderDoc(c){
+  const secs=c.sections||[];
+  let h=`<div class="block-title">本章学习目标</div><ul class="obj-list">`;
+  (c.objectives||[]).forEach(o=>h+=`<li>${inlineMd(o)}</li>`);
+  h+=`</ul>`;
+  if(secs.length){
+    h+=`<div class="sec-toc">`+secs.map((s,i)=>`<a href="#sec-${i}" class="sec-toc-link">${String(i+1).padStart(2,"0")} ${esc(s.title)}</a>`).join("")+`</div>`;
+    const codeMap={};
+    secs.forEach((s,si)=>{
+      h+=`<div class="sec-block" id="sec-${si}"><div class="sec-title"><span class="sec-no">${String(si+1).padStart(2,"0")}</span><span>${esc(s.title)}</span></div><div class="sec-body">${para(s.body)}</div>`;
+      (s.code||[]).forEach((cd,ci)=>{
+        const key=si+"_"+ci;
+        codeMap[key]=cd.code;
+        h+=`<div class="code-card"><div class="hd"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="t">${esc(cd.title||"代码片段")}</span><span class="lang">${esc(cd.lang||"")}</span><button class="copy" data-key="${key}">复制</button></div><pre>${hl(cd.code)}</pre>${cd.desc?`<div class="exp">💡 ${inlineMd(cd.desc)}</div>`:""}</div>`;
+      });
+      if(s.tip) h+=`<div class="sec-tip">⚠️ ${inlineMd(s.tip)}</div>`;
+      h+=`</div>`;
+    });
+    document.getElementById("panel-doc").innerHTML=h;
+    document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>copyCode(b,codeMap[b.dataset.key]));
+  } else {
+    document.getElementById("panel-doc").innerHTML=`<div class="empty">本章内容整理中</div>`;
+  }
+}
+
+function renderQuiz(c){
+  const qs=c.quiz||[];
+  if(!qs.length){document.getElementById("panel-quiz").innerHTML=`<div class="empty">本章暂无测验题</div>`;return;}
+  const K=["A","B","C","D"];
+  let h=qs.map((q,i)=>`
+    <div class="quiz-card" data-i="${i}">
+      <div class="q"><span class="qn">Q${i+1}</span><span>${inlineMd(q.q)}</span></div>
+      <div class="opts">${q.options.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${K[j]}</span><span>${inlineMd(o)}</span></button>`).join("")}</div>
+      <div class="explain"><b>解析：</b>${inlineMd(q.explain)}</div>
+    </div>`).join("");
+  h+=`<div class="quiz-result" id="quiz-result">
+    <div class="score" id="quiz-score">0 / ${qs.length}</div>
+    <p>本章测验完成！</p>
+    <div class="tagline" id="quiz-tagline"></div>
+    <button class="btn ghost" style="margin-top:14px" onclick="location.hash='#/ch/${c.num}'">再读一遍本章</button>
+    ${c.num<COURSE.length?`<button class="btn" style="margin-top:14px" onclick="location.hash='#/ch/${c.num+1}'">进入第 ${c.num+1} 章 →</button>`:""}
+  </div>`;
+  document.getElementById("panel-quiz").innerHTML=h;
+
+  const cards=document.querySelectorAll(".quiz-card");
+  let answered=0, correct=0;
+  cards.forEach(card=>{
+    const i=parseInt(card.dataset.i,10);
+    card.querySelectorAll(".opt").forEach(opt=>{
+      opt.onclick=()=>{
+        const j=parseInt(opt.dataset.j,10);
+        if(card.dataset.locked) return;
+        card.dataset.locked="1";
+        card.querySelectorAll(".opt").forEach(o=>o.disabled=true);
+        const ok=(j===qs[i].answer);
+        if(ok) correct++;
+        card.querySelectorAll(".opt").forEach((o,idx)=>{
+          if(idx===qs[i].answer) o.classList.add("right");
+          else if(idx===j) o.classList.add("wrong");
+        });
+        card.querySelector(".explain").classList.add("show");
+        answered++;
+        if(answered===qs.length){
+          markQuiz(c.num,correct,qs.length);
+          const r=document.getElementById("quiz-result");
+          document.getElementById("quiz-score").textContent=correct+" / "+qs.length;
+          let tg;
+          if(correct===qs.length) tg="满分通关，这一章你完全拿捏了！";
+          else if(correct>=Math.ceil(qs.length/2)) tg="基础不错，建议回看「核心知识点」巩固一下。";
+          else tg="别急，先重读「图文教程」再回来挑战一次。";
+          document.getElementById("quiz-tagline").textContent=tg;
+          r.classList.add("show");
+          r.scrollIntoView({behavior:"smooth",block:"center"});
+        }
+      };
+    });
+  });
+}
+
+/* ---------- progress page ---------- */
+function renderProgress(){
+  setNav("progress");
+  const done=completedCount();
+  let rows=COURSE.map(c=>{
+    const st=chState(c.num);
+    const pct=st.s&&st.t?Math.round(st.s/st.t*100):(st.done?100:(st.read?40:0));
+    return `<tr>
+      <td><b>第 ${c.num} 章</b> · ${esc(c.title)}</td>
+      <td style="color:var(--dim)">${esc(c.difficulty)}</td>
+      <td><div class="pbar"><div class="pfill ${st.done?"ok":""}" style="width:${pct}%"></div></div><small style="color:var(--faint)">${st.done?st.s+"/"+st.t+" 分":"未通关"}</small></td>
+      <td><a href="#/ch/${c.num}">${st.done?"复习":"继续"} →</a></td>
+    </tr>`;
+  }).join("");
+  app.innerHTML=`
+    <section class="hero" style="padding:44px 0 20px"><h1>学习进度</h1>
+      <p class="lead">已通关 ${done} / ${COURSE.length} 章${done===COURSE.length&&COURSE.length?" · 恭喜完成全部课程！":""}</p>
+    </section>
+    <style>.pbar{width:120px;height:8px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;display:inline-block;vertical-align:middle}.pfill{height:100%;background:var(--grad);border-radius:6px}.pfill.ok{background:var(--emerald)}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}th,td{padding:13px 16px;text-align:left;font-size:14px;border-bottom:1px solid var(--line)}th{color:var(--faint);font-size:12.5px;background:rgba(255,255,255,.03)}tr:last-child td{border-bottom:none}</style>
+    <table><tr><th>章节</th><th>难度</th><th>测验进度</th><th></th></tr>${rows}</table>
+    <div style="text-align:center;margin-top:26px"><button class="btn ghost" onclick="localStorage.removeItem('${LS_KEY}');location.hash='#/';location.reload()">重置学习进度</button></div>`;
+}
+
+/* ---------- init ---------- */
+updateProgress();
+route();
+const toTop=document.getElementById("toTop");
+window.addEventListener("scroll",()=>toTop.classList.toggle("show",window.scrollY>600));
+toTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+</script>
+</body>
+</html>

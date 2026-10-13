@@ -191,6 +191,8 @@ header.site{
 .sec-body p{margin:0 0 12px}
 .sec-body code{font-family:"SF Mono",Consolas,monospace;font-size:13px;color:#fbbf24;background:rgba(251,191,36,.08);padding:1px 6px;border-radius:6px;border:1px solid rgba(251,191,36,.18);white-space:pre-wrap;word-break:break-all;overflow-wrap:anywhere}
 .sec-body b{color:var(--txt)}
+.sec-body pre.inline-code{background:#0d1321;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;margin:8px 0 14px;white-space:pre;font-family:"SF Mono",Consolas,monospace;font-size:12.5px;line-height:1.6;color:#e2e8f0}
+.sec-body pre.inline-code code{background:none;border:none;padding:0;color:inherit;font-size:inherit;white-space:pre;word-break:normal;overflow-wrap:normal}
 .sec-tip{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#fbbf24;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:10px 14px;margin-top:12px;line-height:1.7}
 .code-card .lang{font-size:11px;color:#64748b;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:1px 8px;margin-left:auto;letter-spacing:.5px;text-transform:uppercase;flex:0 0 auto;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .code-card .hd .t{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -491,9 +493,15 @@ function renderChapter(num){
 }
 
 function para(t){
-  let blocks=t.split(/\n{2,}/);
-  if(blocks.length===1) blocks=t.split(/\n/);
-  return blocks.map(b=>b.trim()).filter(Boolean).map(b=>`<p>${inlineMd(b)}</p>`).join("");
+  /* support fenced code blocks ```lang ... ``` inside body */
+  const ph=[];
+  const tt=t.replace(/```([\w-]*)\n([\s\S]*?)```/g,(m,lang,code)=>{ph.push('<pre class="inline-code"><code>'+hl(code)+'</code></pre>');return '\u0002'+(ph.length-1)+'\u0002';});
+  let blocks=tt.split(/\n{2,}/);
+  if(blocks.length===1) blocks=tt.split(/\n/);
+  return blocks.map(b=>b.trim()).filter(Boolean).map(b=>{
+    if(/^\u0002\d+\u0002$/.test(b)) return ph[+b.slice(1,-1)];
+    return `<p>${inlineMd(b).replace(/\u0002(\d+)\u0002/g,(m,i)=>ph[+i])}</p>`;
+  }).join("");
 }
 function renderDoc(c){
   const secs=c.sections||[];
